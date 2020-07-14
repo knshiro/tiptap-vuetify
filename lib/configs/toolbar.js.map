@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/configs/toolbar.ts"],"names":[],"mappings":"AAAA,eAAe;AACb,EAAA,KAAK,EAAE,gBADM;AAEb,EAAA,IAAI,EAAE,IAFO;AAGb,EAAA,KAAK,EAAE;AAHM,CAAf","sourcesContent":["export default {\n  color: 'grey lighten-4',\n  flat: true,\n  dense: true\n}\n"],"sourceRoot":"","file":"toolbar.js"}

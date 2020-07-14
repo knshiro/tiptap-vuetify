@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/extensions/nativeExtensions/image/events.ts"],"names":[],"mappings":"AAAA,eAAe;AACb,EAAA,WAAW,EAAE;AADA,CAAf","sourcesContent":["export default {\n  SELECT_FILE: 'select-file' as const\n}\n"],"sourceRoot":"","file":"events.js"}

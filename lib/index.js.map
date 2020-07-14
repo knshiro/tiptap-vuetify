@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/index.ts"],"names":[],"mappings":"AACA;AACA,SAAS,OAAO,IAAI,aAApB;AACA,SAAS,mBAAT","sourcesContent":["\nexport * from '~/extensions/nativeExtensions/index'\nexport { default as TiptapVuetify } from '~/components/TiptapVuetify.vue'\nexport { TiptapVuetifyPlugin } from './plugin'\n"],"sourceRoot":"","file":"index.js"}
