@@ -1,18 +1,35 @@
-import commonjs from 'rollup-plugin-commonjs'
 import vue from 'rollup-plugin-vue'
 import typescript from 'rollup-plugin-typescript2'
-import alias from 'rollup-plugin-alias'
+import alias from '@rollup/plugin-alias'
+import commonjs from '@rollup/plugin-commonjs'
+import replace from '@rollup/plugin-replace'
 import postcss from 'rollup-plugin-postcss'
-import nodeResolve from 'rollup-plugin-node-resolve'
+// import nodeResolve from '@rollup/plugin-node-resolve'
 import ttypescript from 'ttypescript'
 import { join } from 'path'
 import postcssPresetEnv from 'postcss-preset-env'
 import babel from 'rollup-plugin-babel'
-import replace from 'rollup-plugin-replace'
+import pkg from './package.json'
 
 const isProduction = process.env.BUILD === 'production'
 const srcDir = join(__dirname, 'src')
 const distDir = join(__dirname, 'dist')
+
+const external = ['vue',
+'vue-class-component',
+'vue-property-decorator',
+'tiptap',
+'tiptap-extensions',
+'vuetify',
+'vuetify/lib',
+'popper.js',
+'prosemirror-utils',
+'prosemirror-state',
+'prosemirror-transform',
+'prosemirror-model',
+'prosemirror-commands',
+'orderedmap',
+...Object.keys(pkg.dependencies || {})]
 
 export default async () => [
   // You can also get a more optimized wrapper by creating dedicated builds for the formats “cjs” (Node), “amd” or “iife” (script tag)
@@ -72,9 +89,10 @@ async function getConfig ({
       globals: {
         vue: 'Vue',
         // https://github.com/vuejs/vue-class-component/blob/master/build/build.js
-        // 'vue-class-component': 'VueClassComponent',
+        'vue-class-component': 'VueClassComponent',
         // https://github.com/kaorun343/vue-property-decorator/blob/master/rollup.config.js
-        // 'vue-property-decorator': 'VuePropertyDecorator',
+        'vue-property-decorator': 'VuePropertyDecorator',
+        "popper.js": "Popper",
         tiptap: 'tiptap',
         // Походу так и есть: https://github.com/scrumpy/tiptap/blob/master/build/packages/config.js#L44
         'tiptap-extensions': 'tiptap', // TODO tiptapExtensions
@@ -83,15 +101,7 @@ async function getConfig ({
       }
     },
     // TODO можно Object.keys(globals)
-    external: [
-      'vue',
-      // 'vue-class-component',
-      // 'vue-property-decorator',
-      'tiptap',
-      'tiptap-extensions',
-      'vuetify',
-      'vuetify/lib'
-    ],
+    external: external,
     plugins: [
       replace({
         'process.env.NODE_ENV': JSON.stringify('production'),
@@ -99,21 +109,20 @@ async function getConfig ({
       }),
       alias({
         resolve: ['.ts', '.js', '.vue'],
-        '~': srcDir
+        entries: {
+          '~': srcDir
+        }
       }),
       // TODO раньшн nodeResolve был после commonjs (но в github я видел в таком порядке)
-      nodeResolve({
-        mainFields: ['module', 'main', 'browser'],
-        extensions: ['.ts', '.js', '.vue', '.json']
-      }),
+      // nodeResolve({
+      //   mainFields: ['module', 'main', 'browser'],
+      //   extensions: ['.ts', '.js', '.vue', '.json']
+      // }),
       typescript({
         // это фиксит Unknown object type "asyncfunction"
         // https://github.com/ezolenko/rollup-plugin-typescript2/issues/105
         clean: true,
         typescript: ttypescript
-      }),
-      commonjs({
-        extensions: ['.ts', '.js']
       }),
       // TODO autoprefixer (update: разве в postcssPresetEnv его нет?)
       postcss({
@@ -135,8 +144,11 @@ async function getConfig ({
         runtimeHelpers: true,
         extensions: ['.js', '.ts']
       }),
+      commonjs({
+        extensions: ['.ts', '.js']
+      }),
       // оптимизация
-      optimize && isProduction && (await import('rollup-plugin-terser')).terser(),
+      // optimize && isProduction && (await import('rollup-plugin-terser')).terser(),
       ...plugins
     ]
   }
